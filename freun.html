@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#141A18">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Freun: latihan terminologi kedokteran</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141A18; --paper:#1C2421; --ink:#ECEAE2; --mute:#8F9A94; --line:#2B3531; --line2:#3A4640;
+  --acc:#4FB597; --acc-2:#3E9A80; --acc-soft:#1E3A32; --ok:#5CC48F; --ok-soft:#1B3A2A; --no:#E8785C; --no-soft:#3E2620;
+  --gold:#D8B45F; --gold-soft:#3A3120;
+  --serif:"Fraunces",Georgia,serif; --sans:"DM Sans",ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-tap-highlight-color:transparent}
+body{background-image:radial-gradient(1200px 500px at 50% -200px,#1E2A26 0%,var(--bg) 70%)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.term{font-family:var(--serif);font-weight:600;letter-spacing:-.01em}
+#app{max-width:540px;margin:0 auto;padding:22px 18px 48px;min-height:100vh}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:18px}
+header h1{font-family:var(--serif);font-size:30px;font-weight:600;margin:0;line-height:1.1;letter-spacing:-.02em}
+header h1 span{display:block;font-family:var(--sans);font-size:13px;color:var(--mute);font-weight:400;letter-spacing:0;margin-top:4px}
+header h1.sm{font-size:19px}
+.back{color:var(--acc);font-weight:600;padding:6px 0;white-space:nowrap}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.topic{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;gap:12px;padding:0}
+.topic .name{font-family:var(--serif);font-weight:600;font-size:17px;line-height:1.25}
+.topic .sub{color:var(--mute);font-size:13px;margin-top:3px}
+.ring{flex:none;width:38px;height:38px}
+.ring circle{fill:none;stroke-width:3.5}
+.ring .bg{stroke:var(--line)}
+.ring .fg{stroke:var(--acc-2);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
+.ring.done .fg{stroke:var(--gold)}
+.big{display:block;width:100%;background:var(--acc);color:#0F1A16;border-radius:14px;padding:15px 16px;font-weight:600;font-size:16px;margin-top:8px;transition:transform .08s,filter .15s}
+.big:active{transform:scale(.985);filter:brightness(1.12)}
+.big.sec{background:var(--acc-soft);color:var(--acc)}
+.big:disabled{opacity:.4;transform:none}
+.row{display:flex;gap:8px}
+.list{border-top:1px solid var(--line);margin-top:6px}
+.list div{display:grid;grid-template-columns:40% 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px;align-items:baseline}
+.list div b{font-size:16px}
+.list div small{display:block;color:var(--mute);font-size:12.5px;margin-top:2px}
+.list div small.w{color:var(--no)}
+.q{font-size:13.5px;color:var(--mute);margin-bottom:6px}
+.prompt{font-family:var(--serif);font-size:34px;line-height:1.1;margin:2px 0 22px;font-weight:600;letter-spacing:-.02em;overflow-wrap:anywhere}
+.prompt.small{font-size:21px;font-weight:400;font-style:italic;line-height:1.3}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:9px;font-size:15.5px;line-height:1.35;transition:background .15s,border-color .15s,transform .08s}
+.opt:active{transform:scale(.99)}
+.opt:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.opt i{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line2);display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:600;color:var(--mute);font-family:var(--serif)}
+.opt.ok{background:var(--ok-soft);border-color:var(--ok)}
+.opt.ok i{background:var(--ok);border-color:var(--ok);color:#0F1A16}
+.opt.no{background:var(--no-soft);border-color:var(--no)}
+.opt.no i{background:var(--no);border-color:var(--no);color:#0F1A16}
+.opt.dim{opacity:.5}
+.exp{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--acc-2);border-radius:12px;padding:12px 14px;margin:6px 0 14px;font-size:14.5px}
+.exp .parts{display:flex;flex-wrap:wrap;gap:6px}
+.exp .parts span{background:var(--acc-soft);color:var(--acc);border-radius:8px;padding:4px 10px;font-size:13.5px}
+.exp .parts span b{font-family:var(--serif);font-weight:600}
+.meter{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-bottom:6px}
+.track{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:22px}
+.track i{display:block;height:100%;background:var(--acc-2);transition:width .3s}
+.score{font-family:var(--serif);font-size:72px;font-weight:600;line-height:1;margin:4px 0 2px;letter-spacing:-.03em}
+.score small{font-family:var(--sans);font-size:16px;color:var(--mute);font-weight:400;letter-spacing:0}
+.tag{display:inline-block;font-family:var(--sans);font-size:11.5px;border-radius:6px;padding:2px 7px;background:var(--no-soft);color:var(--no);margin-left:8px;vertical-align:middle;font-weight:500}
+.hero{display:flex;gap:10px;margin:4px 0 14px}
+.hero div{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.hero b{display:block;font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.hero span{font-size:12.5px;color:var(--mute);display:block;margin-top:6px}
+.note{font-size:13.5px;color:var(--mute);margin:14px 0 10px}
+.wrongs div{padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.wrongs div small{color:var(--mute)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body><div id="app"></div>
+<script>
+/* ===================== DATA (dari slide MEE101, 1 & 4 Sep 2026) ===================== */
+const T = [
+{id:"struktur",title:"Struktur istilah & combining form",items:[
+ ["prefix","awalan; menunjukkan lokasi/arah, jumlah, ukuran, waktu"],
+ ["word root","akar kata/kata dasar; subjek istilah (biasanya organ)"],
+ ["suffix","akhiran; keadaan, gejala, diagnosis, atau tindakan"],
+ ["combining vowel","huruf penggabung (biasanya o) antara root berakhiran konsonan dan sufiks berawalan konsonan; memudahkan pengucapan"],
+ ["neur/o + plasty","neuroplasty = surgical repair of the nerve"],
+ ["cara mengartikan istilah","1 baca sufiks, 2 cari prefiks, 3 temukan akar kata"],
+ ["hiperglikemia","hiper (tinggi) + glik (glukosa) + emia (kondisi darah) = kadar glukosa darah tinggi"],
+ ["eponim","istilah dari nama tokoh (penyakit Parkinson, sindrom Down)"],
+ ["nomina anatomica","tata nama anatomi; sumber sebagian besar word root"],
+]},
+{id:"root",title:"Akar kata (word root)",items:[
+ ["hepar/","hati / liver"],["gastr/","gaster / lambung"],["pancreat/","pankreas"],["card/i","jantung"],
+ ["abdomin/o","abdomen"],["append/o","appendix"],["arteri/o","artery / arteri"],["intestin/o","intestine / usus"],
+ ["laryng/o","larynx (voice box)"],["muscul/o","muscle / otot"],["thyroid/o","thyroid gland"],["tonsill/o","tonsil"],
+ ["ven/o","vein / vena"],["neur/o","nerve / saraf"],["natal","kelahiran"],["cephal/o","kepala"],["nephr/o","ginjal"],
+ ["oste/o","tulang"],["derm/o","kulit"],["pulmon/o","paru"],["ophthalm/o","mata"],["onc/o","tumor"],
+]},
+{id:"pre-jumlah",title:"Prefiks jumlah & ukuran",items:[
+ ["mono- / uni-","satu (monosit, unilateral)"],["bi- / di-","dua (bilateral, diplopia)"],["tri-","tiga (trikuspid)"],
+ ["tetra- / kuadri-","empat (tetraplegia, kuadriplegia)"],["oligo-","sedikit (oliguria)"],["poli- / multi-","banyak (poliuria, multigravida)"],
+ ["hemi-","setengah (hemiparese)"],["aniso-","tidak sama (anisokor)"],["brady-","lambat (bradycardia)"],["tachy-","cepat (tachycardia)"],
+ ["macro-","besar (macrocephaly)"],["micro-","kecil"],
+]},
+{id:"pre-hubungan",title:"Prefiks hubungan, lokasi & arah",items:[
+ ["ab-","menjauh dari (abduksi)"],["ad-","menuju / mendekati (adduksi)"],["inter-","di antara (interkostal)"],["intra-","di dalam (intravena)"],
+ ["peri- / sirkum-","di sekitar (perikardium)"],["para-","di dekat"],["trans-","melintasi / menembus (transdermal)"],
+ ["endo-","di dalam"],["ekto-","di luar"],["ekstra-","di luar"],["supra-","di atas"],["infra-","di bawah"],["epi-","di atas"],["hipo-","di bawah / kurang (hypotensi)"],["hiper-","berlebihan / tinggi (hypertensi)"],
+ ["ante-","di depan / sebelum"],["post-","di belakang / sesudah"],["retro-","di belakang"],
+ ["anti- / contra-","melawan"],["com- / sym-","bersama"],
+]},
+{id:"pre-waktu",title:"Prefiks waktu (kata dasar natal)",items:[
+ ["prenatal","saat sebelum kelahiran"],["intranatal","saat kelahiran"],["perinatal","sesaat sebelum, selama, dan sesudah kelahiran"],["postnatal","saat dan situasi sesudah kelahiran"],
+ ["ante- / fore- / pre-","sebelum"],["post-","sesudah"],
+]},
+{id:"warna",title:"Prefiks warna",items:[
+ ["melan/o","hitam / black (melanoma)"],["alba","putih / white (linea alba)"],["erythr/o","merah / red (erythrocyt)"],["ruber","merah / red (nucleus ruber)"],
+ ["cyan/o","biru / blue (cyanosis)"],["leuc/o","putih / white (leucopenia)"],["glauc/o","abu-abu / gray (glaucoma)"],
+]},
+{id:"suf-prosedur",title:"Sufiks prosedur & tindakan operasi",items:[
+ ["-sentesis / -centesis","pungsi / tusukan untuk mengeluarkan cairan (amniosentesis, thoracocentesis)"],["-ektomi / -ectomy","pengangkatan melalui pembedahan (apendektomi)"],
+ ["-tomi","insisi / pemotongan (laparotomi)"],["-stomi","membuat lubang buatan (kolostomi)"],["-skopi","pemeriksaan visual (endoskopi)"],
+ ["-plasti / -plasty","perbaikan / rekonstruksi (angioplasti, neuroplasty)"],["-trypsy","menghancurkan (cholelithotrypsi)"],["-rrhaphy","menjahit (nephrorrhaphy)"],
+ ["-gram","hasil rekaman (electrocardiogram)"],["-grafi / -graphy","proses perekaman (electrocardiografi)"],["-logist","ahli / dokter spesialis (cardiologist)"],
+]},
+{id:"suf-kondisi",title:"Sufiks kondisi & gejala",items:[
+ ["-osis","kondisi abnormal (sianosis)"],["-emia","kondisi dalam darah (hiperglikemia)"],["-uria","kondisi dalam urine (hematuria)"],
+ ["-megali / -megaly","pembesaran (kardiomegali, hepatomegaly)"],["-penia","kekurangan / penurunan (leukopenia)"],["-iasis","kondisi abnormal / pembentukan (kolelitiasis)"],
+ ["-algia / -dynia","nyeri / sakit (neuralgia, cephalgia)"],["-pnea","pernapasan (dispnea)"],["-fagia","menelan (disfagia)"],["-fasia","bicara (afasia)"],
+ ["-emesis","muntah (hematemesis)"],["-estesia","sensasi / perasaan (parestesia)"],["-lysis","perusakan / penghancuran (hemolysis)"],
+ ["-rrhea","aliran / cairan (pyorrhea)"],["-spasme","kejang (myospasme)"],["-cele","kantong (hydrocele)"],["-ptosis","turun / jatuh (blepharoptosis)"],
+]},
+{id:"suf-penyakit",title:"Sufiks gangguan & penyakit",items:[
+ ["-pati","gangguan / penyakit (neuropati)"],["-plegia","kelumpuhan (hemiplegia)"],["-paresis","kelemahan / kelumpuhan sebagian (hemiparesis)"],
+ ["-malasia / -malacia","pelunakan abnormal (osteomalasia)"],["-stenosis","penyempitan (pilorostenosis)"],["-sklerosis","pengerasan abnormal (aterosklerosis)"],
+ ["-itis","peradangan (hepatitis, tonsilitis)"],["-oma","tumor / massa (limfoma, adenoma)"],["-karsinoma","keganasan jaringan epitel (adenokarsinoma)"],
+ ["-sarkoma","keganasan jaringan ikat (osteosarkoma)"],["-mikosis","infeksi jamur (dermatomikosis)"],["-nekrosis","kematian jaringan (osteonekrosis)"],
+]},
+{id:"plural",title:"Singular vs plural & cara melafalkan",items:[
+ ["-on → -a","spermatozoon → spermatozoa; ganglion → ganglia"],["-ma → -mata","carcinoma → carcinomata; lipoma → lipomata"],
+ ["-sis → -ses","crisis → crises; prognosis → prognoses"],["-nx → -ges","larynx → larynges; pharynx → pharynges"],
+ ["c di depan huruf lain","diucapkan k (colon, cardiaca)"],["c di depan y, e, i","diucapkan s lemah (cyclus, cytoplasma)"],
+ ["ch","diucapkan k (chromatin, chronis, choledochus)"],["pn","diucapkan n (pneumonia)"],["ps","diucapkan s (psychiatry, psychology)"],
+ ["ae dan oe","diucapkan ee (coelom, fasciae)"],["e / es di akhir kata","diucapkan sebagai huruf terpisah (rete, nares)"],
+]},
+{id:"singkatan",title:"Singkatan & dokter spesialis",items:[
+ ["MRI","Magnetic Resonance Imaging"],["EMG","Electro Myo Graphy"],["EEG","Electro Encephalo Graphy"],["LP","Lumbal Puncture"],["USG","Ultra Sono Graphy"],
+ ["IM","Intra muscular"],["IV","Intra Vena"],["AC","Ante Coenam (sebelum makan)"],["PC","Post Coenam (sesudah makan)"],["CPR","Cardio Pulmonary Resuscitation"],
+ ["ophthalmologist","dokter spesialis mata"],["dermatologist","dokter spesialis kulit"],["cardiologist","dokter spesialis jantung"],["pulmonologist","dokter spesialis paru"],["oncologist","dokter spesialis tumor / kanker"],
+]},
+{id:"posisi",title:"Posisi, bidang & arah anatomi",items:[
+ ["posisi anatomi","berdiri tegak, kedua kaki berdampingan, pandangan lurus ke depan, lengan di sisi tubuh, telapak tangan menghadap ke depan"],
+ ["bidang sagittal","membagi tubuh atas bagian kanan dan kiri"],["bidang midsagittal / mediana","membagi tubuh atas setengah bagian kanan dan kiri yang sama"],
+ ["bidang frontal / coronal","membagi tubuh atas bagian depan dan belakang"],["bidang transversal / horizontal","membagi tubuh atas bagian atas dan bawah"],
+ ["kranial ↔ kaudal","ke arah kepala ↔ ke arah ekor/bawah"],["superior ↔ inferior","atas ↔ bawah"],["proksimal ↔ distal","dekat pangkal ↔ jauh dari pangkal"],
+]},
+{id:"gerakan",title:"Istilah gerakan",items:[
+ ["flexio","memperkecil sudut di antara 2 tulang yang bersendi"],["extentio","memperbesar sudut (kebalikan flexio)"],["flexor / extensor","otot yang menggerakkan flexio / extentio (contoh M. flexor digitorum)"],
+ ["abductio","gerakan menjauhi sumbu/poros tubuh di bidang frontal"],["adductio","gerakan mendekati poros tubuh di bidang frontal"],
+ ["rotatio","gerakan berputar"],["endorotatio / rotatio internal / medial rotatio","gerakan berputar ke dalam"],["exorotatio / rotatio external / lateral rotatio","gerakan berputar ke luar"],
+ ["circumductio","gerakan berputar, bagian ujung membentuk lingkaran (circum)"],
+ ["pronatio","rotasi lengan bawah sehingga telapak menghadap ke bawah"],["supinatio","rotasi lengan bawah sehingga telapak tangan menghadap ke atas"],
+ ["dorsoflexio","kaki/jari ditarik ke arah punggung kaki (ke atas)"],["plantarflexio","kaki ditekan ke arah telapak (ke bawah)"],
+ ["inversio","mengangkat sisi medial kaki"],["eversio","mengangkat sisi lateral kaki"],
+ ["oppositio","ibu jari mendekati/menyentuh jari lain"],["retropositio / repositio","ibu jari kembali dari posisi oppositio"],
+]},
+{id:"regio",title:"Regio, kuadran & rongga tubuh",items:[
+ ["regio hypochondriaca dextra / sinistra","regio kanan/kiri atas, di bawah iga (chondriac = iga)"],["regio epigastrica","regio tengah atas, di atas lambung"],
+ ["regio lumbalis dextra / sinistra","regio kanan/kiri tengah (lumbal = antara iga dan panggul)"],["regio umbilicalis","regio tengah, sekitar pusar"],
+ ["regio iliaca dextra / sinistra","regio kanan/kiri bawah (ilium = tulang panggul)"],["regio hypogastrica","regio tengah bawah, di bawah lambung"],
+ ["RUQ","right upper quadrant: liver"],["LUQ","left upper quadrant: stomach"],["RLQ","right lower quadrant: appendix"],["LLQ","left lower quadrant"],
+ ["cavum ventralis","cavum thoracica, cavum abdominalis, cavum pelvicum"],["cavum thoracica","rongga dada: cavum pleura & cavum pericardial"],
+ ["cavum dorsalis","cavum cranii, cavum spinalis / vertebralis"],["diaphragma","memisahkan cavum thoracica dan cavum abdominalis"],
+]},
+{id:"sistem",title:"Sistem dalam tubuh",items:[
+ ["sistem rangka","skeletal"],["sistem otot","muscular"],["sistem kardiovaskular","cardiovascular; jantung & pembuluh darah"],["sistem saraf","nervous"],
+ ["sistem pencernaan","digestivus"],["sistem pernafasan","respiratorius"],["sistem urinarius","urinary; ginjal & saluran kemih"],["sistem endokrin","kelenjar hormon"],
+ ["sistem integumen","kulit"],["sistem pancaindera","sensory"],["sistem reproduksi","pria dan wanita"],
+]},
+];
+/* Bedah kata: [kata, arti, [[bagian,arti],...]] */
+const W = [
+["cardiomegaly","pembesaran jantung",[["cardi/o","jantung"],["-megaly","pembesaran"]]],
+["carditis","peradangan jantung",[["card","jantung"],["-itis","peradangan"]]],
+["pericarditis","peradangan selaput di sekitar jantung",[["peri-","di sekitar"],["card","jantung"],["-itis","peradangan"]]],
+["endocarditis","peradangan lapisan dalam jantung",[["endo-","lapisan dalam"],["card","jantung"],["-itis","peradangan"]]],
+["electrocardiogram","hasil rekaman listrik jantung",[["electr/o","listrik"],["cardi/o","jantung"],["-gram","hasil rekaman"]]],
+["electrocardiografi","proses perekaman listrik jantung",[["electr/o","listrik"],["cardi/o","jantung"],["-grafi","proses perekaman"]]],
+["hepatitis","peradangan hati",[["hepat","hati"],["-itis","peradangan"]]],
+["hepatoma","tumor hati",[["hepat","hati"],["-oma","tumor"]]],
+["hepatomegaly","pembesaran hati",[["hepat/o","hati"],["-megaly","pembesaran"]]],
+["appendectomy","pengangkatan appendix melalui pembedahan",[["append","appendix"],["-ectomy","pengangkatan bedah"]]],
+["intracellular","di dalam sel",[["intra-","di dalam"],["cellular","sel"]]],
+["ekstraselular","di luar sel",[["ekstra-","di luar"],["selular","sel"]]],
+["hypotensi","tekanan darah rendah",[["hypo-","rendah / kurang"],["tensi","tekanan"]]],
+["hypertensi","tekanan darah tinggi",[["hyper-","tinggi / berlebihan"],["tensi","tekanan"]]],
+["biceps","otot berkepala dua",[["bi-","dua"],["ceps","kepala"]]],
+["triceps","otot berkepala tiga",[["tri-","tiga"],["ceps","kepala"]]],
+["leukosit","sel darah putih",[["leuk/o","putih"],["-sit","sel"]]],
+["eritrosit","sel darah merah",[["erythr/o","merah"],["-sit","sel"]]],
+["tonsilectomy","pengangkatan tonsil (potong dan keluarkan)",[["tonsil","tonsil"],["-ectomy","pengangkatan bedah"]]],
+["tonsilitis","radang pada tonsil",[["tonsil","tonsil"],["-itis","peradangan"]]],
+["neuroplasty","surgical repair of the nerve",[["neur/o","saraf"],["-plasty","perbaikan bedah"]]],
+["hiperglikemia","kadar glukosa dalam darah tinggi",[["hiper-","tinggi"],["glik","glukosa"],["-emia","kondisi darah"]]],
+["cephalgia","nyeri kepala",[["cephal","kepala"],["-algia","nyeri"]]],
+["hemolysis","penghancuran sel darah merah",[["hem/o","darah"],["-lysis","penghancuran"]]],
+["leucopenia","penurunan sel darah putih",[["leuc/o","putih"],["-penia","penurunan"]]],
+["pyorrhea","aliran nanah",[["py/o","nanah"],["-rrhea","aliran"]]],
+["myospasme","kejang otot",[["my/o","otot"],["-spasme","kejang"]]],
+["hydrocele","kantong berisi cairan",[["hydr/o","cairan"],["-cele","kantong"]]],
+["adenoma","tumor kelenjar",[["aden","kelenjar"],["-oma","tumor"]]],
+["blepharoptosis","turunnya kelopak mata",[["blephar/o","kelopak mata"],["-ptosis","turun"]]],
+["osteomalacia","pelunakan tulang",[["oste/o","tulang"],["-malacia","pelunakan"]]],
+["cholelithotrypsi","penghancuran batu empedu",[["chole","empedu"],["lith/o","batu"],["-trypsi","menghancurkan"]]],
+["thoracocentesis","tusukan dada untuk mengambil cairan",[["thorac/o","dada"],["-centesis","tusukan ambil cairan"]]],
+["nephrorrhaphy","penjahitan ginjal",[["nephr/o","ginjal"],["-rrhaphy","menjahit"]]],
+["bradycardia","denyut jantung lambat",[["brady-","lambat"],["cardia","jantung"]]],
+["tachycardia","denyut jantung cepat",[["tachy-","cepat"],["cardia","jantung"]]],
+["hemiparese","kelemahan setengah tubuh",[["hemi-","setengah"],["-parese","kelemahan"]]],
+["anisokor","pupil tidak sama besar",[["aniso-","tidak sama"],["kor","pupil"]]],
+["macrocephaly","kepala besar",[["macro-","besar"],["cephaly","kepala"]]],
+["hematuria","darah dalam urine",[["hemat","darah"],["-uria","kondisi urine"]]],
+["kolelitiasis","pembentukan batu empedu",[["kole","empedu"],["lit","batu"],["-iasis","pembentukan"]]],
+["dispnea","sesak / kesulitan bernapas",[["dis-","sulit"],["-pnea","pernapasan"]]],
+["disfagia","kesulitan menelan",[["dis-","sulit"],["-fagia","menelan"]]],
+["afasia","tidak bisa bicara",[["a-","tanpa"],["-fasia","bicara"]]],
+["hematemesis","muntah darah",[["hemat","darah"],["-emesis","muntah"]]],
+["parestesia","sensasi abnormal (kesemutan)",[["par-","abnormal"],["-estesia","sensasi"]]],
+["neuropati","gangguan saraf",[["neur/o","saraf"],["-pati","gangguan"]]],
+["hemiplegia","kelumpuhan setengah tubuh",[["hemi-","setengah"],["-plegia","kelumpuhan"]]],
+["pilorostenosis","penyempitan pilorus",[["piloro","pilorus"],["-stenosis","penyempitan"]]],
+["aterosklerosis","pengerasan pembuluh darah",[["atero","plak lemak"],["-sklerosis","pengerasan"]]],
+["adenokarsinoma","keganasan epitel kelenjar",[["aden/o","kelenjar"],["-karsinoma","keganasan epitel"]]],
+["osteosarkoma","keganasan jaringan ikat tulang",[["oste/o","tulang"],["-sarkoma","keganasan jaringan ikat"]]],
+["dermatomikosis","infeksi jamur kulit",[["dermat/o","kulit"],["-mikosis","infeksi jamur"]]],
+["osteonekrosis","kematian jaringan tulang",[["oste/o","tulang"],["-nekrosis","kematian jaringan"]]],
+["kolostomi","membuat lubang buatan pada kolon",[["kolo","kolon / usus besar"],["-stomi","lubang buatan"]]],
+["laparotomi","insisi dinding perut",[["laparo","dinding perut"],["-tomi","insisi"]]],
+["angioplasti","perbaikan pembuluh darah",[["angio","pembuluh darah"],["-plasti","perbaikan"]]],
+["amniosentesis","pungsi cairan amnion",[["amnio","selaput amnion"],["-sentesis","pungsi"]]],
+["interkostal","di antara iga",[["inter-","di antara"],["kostal","iga"]]],
+["transdermal","menembus kulit",[["trans-","menembus"],["dermal","kulit"]]],
+["oliguria","urine sedikit",[["oligo-","sedikit"],["-uria","urine"]]],
+["poliuria","urine banyak",[["poli-","banyak"],["-uria","urine"]]],
+["multigravida","hamil lebih dari sekali",[["multi-","banyak"],["gravida","kehamilan"]]],
+["tetraplegia","kelumpuhan keempat anggota gerak",[["tetra-","empat"],["-plegia","kelumpuhan"]]],
+["diplopia","penglihatan ganda",[["di-","dua"],["-opia","penglihatan"]]],
+];
+
+/* ===================== STATE ===================== */
+const KEY="freun-v1";
+let S=JSON.parse(localStorage.getItem(KEY)||"null")||{seen:{},wrong:{},best:null,exams:0};
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+const app=document.getElementById("app");
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ring=(d,n)=>{const p=n?d/n:0,r=16,c=2*Math.PI*r;return `<svg class="ring ${p>=1?"done":""}" viewBox="0 0 40 40"><circle class="bg" cx="20" cy="20" r="${r}"/><circle class="fg" cx="20" cy="20" r="${r}" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}"/></svg>`};
+const allItems=()=>T.flatMap(t=>t.items.map(([a,b])=>({k:t.id+"|"+a,t:a,m:b,topic:t.id})));
+
+/* ===================== QUESTION GENERATORS ===================== */
+// mode: "tm" term→meaning, "mt" meaning→term, "bedah" word breakdown
+function qFromItem(it,pool){
+  const rev=Math.random()<0.4;
+  const same=shuf(pool.filter(p=>p.k!==it.k&&p.topic===it.topic&&(rev?p.t!==it.t:p.m!==it.m)));
+  const rest=shuf(pool.filter(p=>p.k!==it.k&&p.topic!==it.topic&&(rev?p.t!==it.t:p.m!==it.m)));
+  const others=[...same,...rest].slice(0,3);
+  return rev
+   ?{key:it.k,ask:"Istilah mana yang berarti:",prompt:it.m,small:true,answer:it.t,opts:shuf([it.t,...others.map(o=>o.t)]),exp:null}
+   :{key:it.k,ask:"Apa arti:",prompt:it.t,small:false,answer:it.m,opts:shuf([it.m,...others.map(o=>o.m)]),exp:null};
+}
+function qBedah(w){
+  const others=shuf(W.filter(x=>x[0]!==w[0])).slice(0,3);
+  return {key:"W|"+w[0],ask:"Bedah kata. Apa artinya:",prompt:w[0],small:false,answer:w[1],opts:shuf([w[1],...others.map(o=>o[1])]),exp:w[2]};
+}
+function buildQuiz(items,words,n){
+  const qs=[...items.map(i=>()=>qFromItem(i,allItems())),...words.map(w=>()=>qBedah(w))];
+  return shuf(qs).slice(0,n||qs.length).map(f=>f());
+}
+
+/* ===================== VIEWS ===================== */
+function home(){
+  const total=allItems().length+W.length, seen=Object.keys(S.seen).length, wrongs=Object.keys(S.wrong).length;
+  app.innerHTML=`<header><h1>Freun<span>Terminologi kedokteran, MEE101</span></h1></header>
+  <div class="hero"><div><b>${seen}<small style="font-size:16px;color:var(--mute);font-family:var(--sans)">/${total}</small></b><span>istilah sudah dilatih</span></div><div><b>${S.best==null?"–":S.best+"%"}</b><span>skor simulasi terbaik</span></div></div>
+  <button class="big" data-a="exam">Simulasi ujian (30 soal campur)</button>
+  <div class="row"><button class="big sec" data-a="bedah">Bedah kata (${W.length})</button><button class="big sec" data-a="wrong" ${wrongs?"":"disabled"}>Ulangi yang salah (${wrongs})</button></div>
+  <p class="note">Latih per topik: lihat daftar dulu, baru kuis.</p>
+  ${T.map(t=>{const d=t.items.filter(([a])=>S.seen[t.id+"|"+a]).length,w=t.items.filter(([a])=>S.wrong[t.id+"|"+a]).length;
+   return `<div class="card"><button class="topic" data-t="${t.id}"><div><div class="name">${esc(t.title)}${w?`<span class="tag">${w} salah</span>`:""}</div><div class="sub">${t.items.length} istilah${d?` · ${d} dilatih`:""}</div></div>${ring(d,t.items.length)}</button></div>`}).join("")}`;
+  app.onclick=e=>{const b=e.target.closest("button");if(!b)return;
+    if(b.dataset.t)return topic(b.dataset.t);
+    if(b.dataset.a==="exam")return quiz(buildQuiz(allItems(),W,30),"Simulasi ujian",true);
+    if(b.dataset.a==="bedah")return wordList();
+    if(b.dataset.a==="wrong"){const ks=Object.keys(S.wrong);const its=allItems().filter(i=>ks.includes(i.k));const ws=W.filter(w=>ks.includes("W|"+w[0]));return quiz(buildQuiz(its,ws),"Ulangi yang salah");}
+  };
+}
+function topic(id){
+  const t=T.find(x=>x.id===id);
+  app.innerHTML=`<header><button class="back" data-a="home">‹ Kembali</button><h1 class="sm">${esc(t.title)}</h1></header>
+  <div class="card"><p class="note">Baca dulu, lalu mulai kuis. Salah tidak apa-apa, akan masuk daftar ulang.</p>
+  <div class="list">${t.items.map(([a,b])=>`<div><b class="term">${esc(a)}</b><span>${esc(b)}${S.wrong[id+"|"+a]?'<small class="w">pernah salah</small>':""}</span></div>`).join("")}</div></div>
+  <button class="big" data-a="go">Mulai kuis (${t.items.length} soal)</button>`;
+  app.onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.a==="home")home();
+    if(b.dataset.a==="go"){const its=allItems().filter(i=>i.topic===id);quiz(buildQuiz(its,[]),t.title);}};
+}
+function wordList(){
+  app.innerHTML=`<header><button class="back" data-a="home">‹ Kembali</button><h1 class="sm">Bedah kata</h1></header>
+  <div class="card"><p class="note">Pola soal ujian: baca sufiks, cari prefiks, temukan akar kata.</p>
+  <div class="list">${W.map(w=>`<div><b class="term">${esc(w[0])}</b><span>${esc(w[1])}<small>${w[2].map(p=>p[0]+" = "+p[1]).join(" · ")}</small></span></div>`).join("")}</div></div>
+  <button class="big" data-a="go">Mulai kuis (20 soal)</button>`;
+  app.onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.a==="home")home();if(b.dataset.a==="go")quiz(buildQuiz([],W,20),"Bedah kata");};
+}
+function quiz(qs,title,isExam){
+  let i=0,score=0,miss=[];
+  const show=()=>{
+    if(i>=qs.length)return result();
+    const q=qs[i];
+    app.innerHTML=`<header><button class="back" data-a="quit">‹ Keluar</button><h1 class="sm">${esc(title)}</h1></header>
+    <div class="meter"><span>Soal ${i+1} dari ${qs.length}</span><span>Benar ${score}</span></div><div class="track"><i style="width:${Math.round(100*i/qs.length)}%"></i></div>
+    <div class="q">${q.ask}</div><div class="prompt term ${q.small?"small":""}">${esc(q.prompt)}</div>
+    <div id="opts">${q.opts.map((o,k)=>`<button class="opt" data-o="${esc(o)}"><i>${"ABCD"[k]}</i><span>${esc(o)}</span></button>`).join("")}</div><div id="exp"></div>`;
+    app.onclick=e=>{const b=e.target.closest("button");if(!b)return;
+      if(b.dataset.a==="quit"){if(confirm("Keluar? Progres kuis ini hilang."))home();return;}
+      if(b.dataset.a==="next"){i++;show();return;}
+      if(b.dataset.o==null||app.dataset.lock)return;
+      app.dataset.lock=1;const ok=b.dataset.o===q.answer;
+      S.seen[q.key]=1; if(ok){score++;delete S.wrong[q.key]}else{S.wrong[q.key]=1;miss.push(q)} save();
+      document.querySelectorAll(".opt").forEach(o=>{o.disabled=true;if(o.dataset.o===q.answer)o.classList.add("ok");else if(o===b)o.classList.add("no");else o.classList.add("dim")});
+      let ex=ok?"":`<div class="exp"><b>Jawaban:</b> ${esc(q.answer)}</div>`;
+      if(q.exp)ex=`<div class="exp"><div class="parts">${q.exp.map(p=>`<span><b>${esc(p[0])}</b> ${esc(p[1])}</span>`).join("")}</div></div>`+(ok?"":ex);
+      document.getElementById("exp").innerHTML=ex+`<button class="big" data-a="next">${i+1<qs.length?"Lanjut":"Lihat hasil"}</button>`;
+      delete app.dataset.lock;
+    };
+  };
+  const result=()=>{
+    const pct=Math.round(100*score/qs.length);
+    if(isExam){S.exams++;if(S.best==null||pct>S.best)S.best=pct;save();}
+    app.innerHTML=`<header><button class="back" data-a="home">‹ Beranda</button><h1 class="sm">${esc(title)}</h1></header>
+    <div class="card"><div class="score">${pct}%<small> ${score}/${qs.length} benar</small></div>
+    <p class="note">${pct>=85?"Siap. Ulangi sekali lagi besok supaya tidak lupa.":pct>=65?"Lumayan. Fokus ke yang salah di bawah.":"Belum aman. Baca ulang topiknya, lalu ulangi."}</p>
+    ${miss.length?`<div class="wrongs">${miss.map(q=>`<div><b class="term">${esc(q.prompt)}</b><br><small>${esc(q.answer)}</small></div>`).join("")}</div>`:""}</div>
+    ${miss.length?`<button class="big" data-a="retry">Ulangi ${miss.length} yang salah</button>`:""}
+    <button class="big sec" data-a="home">Kembali ke beranda</button>`;
+    app.onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.a==="home")home();
+      if(b.dataset.a==="retry")quiz(shuf(miss).map(q=>({...q,opts:shuf(q.opts)})),"Ulangi yang salah");};
+  };
+  show();
+}
+home();
+</script>
+</body></html>
