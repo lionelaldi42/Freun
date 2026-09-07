@@ -275,9 +275,16 @@ function qBedah(w){
   const others=shuf(W.filter(x=>x[0]!==w[0])).slice(0,3);
   return {key:"W|"+w[0],ask:"Bedah kata. Apa artinya:",prompt:w[0],small:false,answer:w[1],opts:shuf([w[1],...others.map(o=>o[1])]),exp:w[2]};
 }
-function buildQuiz(items,words,n){
-  const qs=[...items.map(i=>()=>qFromItem(i,allItems())),...words.map(w=>()=>qBedah(w))];
-  return shuf(qs).slice(0,n||qs.length).map(f=>f());
+// bobot: pernah salah 4, belum pernah dilatih 3, sudah benar 1
+const weight=k=>S.wrong[k]?4:(S.seen[k]?1:3);
+function pick(cands,n){const out=[];cands=cands.slice();
+  while(out.length<n&&cands.length){let tot=cands.reduce((s,c)=>s+c.w,0),r=Math.random()*tot,i=0;
+    for(;i<cands.length;i++){r-=cands[i].w;if(r<=0)break}out.push(cands.splice(Math.min(i,cands.length-1),1)[0])}return out}
+function buildQuiz(items,words,n,smart){
+  const qs=[...items.map(i=>({k:i.k,f:()=>qFromItem(i,allItems())})),...words.map(w=>({k:"W|"+w[0],f:()=>qBedah(w)}))];
+  if(!n||n>=qs.length)return shuf(qs).map(q=>q.f());
+  if(!smart)return shuf(qs).slice(0,n).map(q=>q.f());
+  return shuf(pick(qs.map(q=>({...q,w:weight(q.k)})),n)).map(q=>q.f());
 }
 
 /* ===================== VIEWS ===================== */
@@ -286,13 +293,14 @@ function home(){
   app.innerHTML=`<header><h1>Freun<span>Terminologi kedokteran, MEE101</span></h1></header>
   <div class="hero"><div><b>${seen}<small style="font-size:16px;color:var(--mute);font-family:var(--sans)">/${total}</small></b><span>istilah sudah dilatih</span></div><div><b>${S.best==null?"–":S.best+"%"}</b><span>skor simulasi terbaik</span></div></div>
   <button class="big" data-a="exam">Simulasi ujian (30 soal campur)</button>
+  <p class="note" style="margin:6px 2px 0">Simulasi mengutamakan yang pernah salah dan yang belum pernah dilatih.</p>
   <div class="row"><button class="big sec" data-a="bedah">Bedah kata (${W.length})</button><button class="big sec" data-a="wrong" ${wrongs?"":"disabled"}>Ulangi yang salah (${wrongs})</button></div>
   <p class="note">Latih per topik: lihat daftar dulu, baru kuis.</p>
   ${T.map(t=>{const d=t.items.filter(([a])=>S.seen[t.id+"|"+a]).length,w=t.items.filter(([a])=>S.wrong[t.id+"|"+a]).length;
    return `<div class="card"><button class="topic" data-t="${t.id}"><div><div class="name">${esc(t.title)}${w?`<span class="tag">${w} salah</span>`:""}</div><div class="sub">${t.items.length} istilah${d?` · ${d} dilatih`:""}</div></div>${ring(d,t.items.length)}</button></div>`}).join("")}`;
   app.onclick=e=>{const b=e.target.closest("button");if(!b)return;
     if(b.dataset.t)return topic(b.dataset.t);
-    if(b.dataset.a==="exam")return quiz(buildQuiz(allItems(),W,30),"Simulasi ujian",true);
+    if(b.dataset.a==="exam")return quiz(buildQuiz(allItems(),W,30,true),"Simulasi ujian",true);
     if(b.dataset.a==="bedah")return wordList();
     if(b.dataset.a==="wrong"){const ks=Object.keys(S.wrong);const its=allItems().filter(i=>ks.includes(i.k));const ws=W.filter(w=>ks.includes("W|"+w[0]));return quiz(buildQuiz(its,ws),"Ulangi yang salah");}
   };
@@ -311,7 +319,7 @@ function wordList(){
   <div class="card"><p class="note">Pola soal ujian: baca sufiks, cari prefiks, temukan akar kata.</p>
   <div class="list">${W.map(w=>`<div><b class="term">${esc(w[0])}</b><span>${esc(w[1])}<small>${w[2].map(p=>p[0]+" = "+p[1]).join(" · ")}</small></span></div>`).join("")}</div></div>
   <button class="big" data-a="go">Mulai kuis (20 soal)</button>`;
-  app.onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.a==="home")home();if(b.dataset.a==="go")quiz(buildQuiz([],W,20),"Bedah kata");};
+  app.onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.a==="home")home();if(b.dataset.a==="go")quiz(buildQuiz([],W,20,true),"Bedah kata");};
 }
 function quiz(qs,title,isExam){
   let i=0,score=0,miss=[];
